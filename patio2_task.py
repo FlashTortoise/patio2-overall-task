@@ -10,6 +10,8 @@ import tortoise as t
 # noinspection PyUnresolvedReferences
 from car_find_color import ColorTracingTask
 from beacon_detect import BeaconDetectionTask
+from communication_task import CommunicationTask
+from pour_fishfood import PourFishFoodTask
 from turning import Turning
 from wall_following_task import PlanterWallFollower
 
@@ -42,11 +44,15 @@ class Patio2(t.Task):
         self.b_2fish_task.direction_constant = 7./5
         self.b_2fish_task.threshold_area = 35000
 
+        self.pour_fish_food = PourFishFoodTask()
+
         self.t_at_fish_food = Turning(-200)
 
         self.b_2communication_task = BeaconDetectionTask()
         self.b_2communication_task.threshold_area = 35000
         self.b_2communication_task.direction_constant = 7./2
+
+        self.communication_task = CommunicationTask()
 
         self.step_manager = tool.StepManager()
 
@@ -100,6 +106,8 @@ class Patio2(t.Task):
                 self.b_2fish_task.beacon_area, self.b_2fish_task.turn_dir)
 
             self.set_speeds_from_beacon_flag(self.b_2fish_task.turn_dir)
+        elif not self.pour_fish_food.done:
+            self.pour_fish_food.step()
         elif tool.run_n_time_flag(self, 'yogokut'):
             print '\033[0;32m{}\033[0m'.format('Turning to communication')
             self.step_manager.add_blocking(
@@ -113,6 +121,8 @@ class Patio2(t.Task):
                 self.b_2communication_task.beacon_area, self.b_2communication_task.turn_dir)
 
             self.set_speeds_from_beacon_flag(self.b_2communication_task.turn_dir)
+        elif not self.communication_task.done:
+            self.communication_task.step()
         else:
             sys.exit()
 
