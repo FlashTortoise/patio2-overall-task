@@ -11,7 +11,7 @@ import tortoise as t
 from car_find_color import ColorTracingTask
 from beacon_detect import BeaconDetectionTask
 from turning import Turning
-from wall_following_task_indoor import PlanterWallFollower
+from wall_following_task import PlanterWallFollower
 
 t.update_config(TORTOISE_WALK_PERIOD=0.1)
 logging.getLogger('tortoise.p').setLevel(logging.WARN)
@@ -39,14 +39,14 @@ class Patio2(t.Task):
         self.t_before_feed_fish = Turning(-110)
 
         self.b_2fish_task = BeaconDetectionTask()
-        self.b_2fish_task.direction_constant = 4
-        self.b_2fish_task.threshold_area = 130000
+        self.b_2fish_task.direction_constant = 7./5
+        self.b_2fish_task.threshold_area = 35000
 
         self.t_at_fish_food = Turning(-200)
 
         self.b_2communication_task = BeaconDetectionTask()
-        self.b_2communication_task.threshold_area = 130000
-        self.b_2communication_task.direction_constant = 4
+        self.b_2communication_task.threshold_area = 35000
+        self.b_2communication_task.direction_constant = 7./2
 
         self.step_manager = tool.StepManager()
 
